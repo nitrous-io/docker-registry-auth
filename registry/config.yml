@@ -1,0 +1,33 @@
+version: 0.1
+log:
+  level: debug
+  fields:
+    service: registry
+    environment: development
+storage:
+  cache:
+    blobdescriptor: inmemory
+  filesystem:
+    rootdirectory: /var/lib/registry
+auth:
+  token:
+    realm: https://reggie.n2odev.com:5002/auth
+    service: Docker registry
+    issuer: Nitrous Auth Service
+    rootcertbundle: /etc/docker/registry/n2odev.crt
+http:
+  addr: :5000
+  tls:
+    certificate: /etc/docker/registry/n2odev.crt
+    key: /etc/docker/registry/n2odev.key
+  secret: asecretforlocaldevelopment
+  headers:
+    X-Content-Type-Options: [nosniff]
+  debug:
+    addr: :5001
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3
+
