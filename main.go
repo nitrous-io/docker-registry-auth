@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"crypto/x509"
+	"database/sql"
 	"net/http"
 	"os"
 	"os/signal"
@@ -14,6 +15,8 @@ import (
 	"github.com/facebookgo/httpdown"
 	"github.com/justinas/alice"
 	"github.com/kelseyhightower/envconfig"
+
+	_ "github.com/lib/pq"
 )
 
 const envPrefix = "REGAUTH" // Env vars should be prefixed with "REGAUTH_".
@@ -48,6 +51,17 @@ func main() {
 		logrus.Fatalf("Error getting token private key, err: %v", err)
 	}
 	cfg.token.privateKey = tokenPrivateKey
+
+	if cfg.DatabaseURL != "" {
+		db, err := sql.Open("postgres", cfg.DatabaseURL)
+		if err != nil {
+			logrus.Fatalf("Error opening database, err: %v", err)
+		}
+		if err := db.Ping(); err != nil {
+			logrus.Fatalf("Error pinging database, err: %v", err)
+		}
+		cfg.db = db
+	}
 
 	svr := NewServer(&cfg)
 

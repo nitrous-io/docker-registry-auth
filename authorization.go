@@ -1,5 +1,7 @@
 package main
 
+import "database/sql"
+
 type Authorizer interface {
 	Authorize(ai *AuthorizationInfo) ([]string, error)
 }
@@ -13,6 +15,7 @@ type AuthorizationInfo struct {
 }
 
 type NitrousAuthorizer struct {
+	DB *sql.DB
 }
 
 func (a *NitrousAuthorizer) Authorize(ai *AuthorizationInfo) ([]string, error) {

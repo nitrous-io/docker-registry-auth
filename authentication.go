@@ -1,5 +1,7 @@
 package main
 
+import "database/sql"
+
 type Authenticator interface {
 	Authenticate(user string, password PasswordString) (bool, error)
 }
@@ -14,9 +16,25 @@ func (s PasswordString) String() string {
 }
 
 type NitrousUserAuthenticator struct {
+	DB *sql.DB
 }
 
-func (a *NitrousUserAuthenticator) Authenticate(user string, password PasswordString) (bool, error) {
+const dockerRegistryTokenType = "docker_registry" // Tokens in the database should be of this type.
+
+func (na *NitrousUserAuthenticator) Authenticate(user string, password PasswordString) (bool, error) {
+	var userID int64
+	err := na.DB.QueryRow(`SELECT user_id FROM tokens WHERE
+			type = $1
+			AND token = $2
+			AND user_id = (SELECT id FROM users WHERE username = $3)
+			AND user_id IS NOT NULL`,
+		dockerRegistryTokenType, string(password), user).Scan(&userID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, err
+	}
 
 	return true, nil
 }

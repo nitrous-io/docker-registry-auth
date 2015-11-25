@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
@@ -35,6 +36,7 @@ type Config struct {
 	TokenKeyPath  string `envconfig:"token_key_path"`
 
 	token TokenConfig
+	db    *sql.DB
 }
 
 type TokenConfig struct {
@@ -66,8 +68,10 @@ func NewServer(config *Config) *Server {
 	svr.router = r
 
 	// TODO Allow these 2 to be configured so that we can replace them in tests.
-	svr.authenticator = &NitrousUserAuthenticator{}
-	svr.authorizer = &NitrousAuthorizer{}
+	if config.db != nil {
+		svr.authenticator = &NitrousUserAuthenticator{DB: config.db}
+		svr.authorizer = &NitrousAuthorizer{DB: config.db}
+	}
 
 	return svr
 }
@@ -161,6 +165,7 @@ func (s *Server) parseRequest(r *http.Request) (*AuthRequest, error) {
 	return ar, nil
 }
 
+// See https://github.com/docker/distribution/blob/master/docs/spec/auth/jwt.md.
 func (s *Server) createToken(ar *AuthRequest, actions []string) (string, error) {
 	// TODO Consider using github.com/dgrijalva/jwt-go.
 
