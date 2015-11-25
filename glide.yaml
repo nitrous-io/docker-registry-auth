@@ -22,3 +22,5 @@ import:
   - /registry/auth/token
 - package: github.com/docker/libtrust
   version: 9cbd2a1374f46905c68a4eb3694a130610adc62a
+- package: github.com/lib/pq
+  version: ae7391529ced9c12f06bf01eae33dadb4c70e49f
