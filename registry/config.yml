@@ -13,7 +13,7 @@ auth:
   token:
     realm: http://reggie.n2odev.com:5002/auth
     service: Docker registry
-    issuer: Nitrous Auth Service
+    issuer: Nitrous Registry Auth Service
     rootcertbundle: /etc/docker/registry/n2odev.crt
 http:
   addr: :5000
