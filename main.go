@@ -31,7 +31,9 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", indexHandler).Methods("GET")
 
-	chain := alice.New(logging).Then(r)
+	logHeaders := true
+	logFormData := true
+	chain := alice.New(logging(logHeaders, logFormData)).Then(r)
 
 	svr := &http.Server{Addr: cfg.Address, Handler: chain}
 
