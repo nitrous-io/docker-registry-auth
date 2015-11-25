@@ -14,3 +14,5 @@ import:
   version: 41df9c4b742349146d28ac5d8caa45161209f3fc
 - package: github.com/facebookgo/stats
   version: a8126df93b2406675168d2930b6d3db46ffb805c
+- package: github.com/justinas/alice
+  version: 82db91fe6d1db4c070fed544cb5d0b5cc08fe276
