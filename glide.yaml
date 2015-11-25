@@ -16,3 +16,9 @@ import:
   version: a8126df93b2406675168d2930b6d3db46ffb805c
 - package: github.com/justinas/alice
   version: 82db91fe6d1db4c070fed544cb5d0b5cc08fe276
+- package: github.com/docker/distribution
+  version: d7a4f6cb6a830e6836608a4af019774a27a0540a
+  subpackages:
+  - /registry/auth/token
+- package: github.com/docker/libtrust
+  version: 9cbd2a1374f46905c68a4eb3694a130610adc62a
