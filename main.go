@@ -11,6 +11,7 @@ import (
 	"github.com/Sirupsen/logrus"
 	"github.com/facebookgo/httpdown"
 	"github.com/gorilla/mux"
+	"github.com/justinas/alice"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -30,7 +31,9 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", indexHandler).Methods("GET")
 
-	svr := &http.Server{Addr: cfg.Address, Handler: r}
+	chain := alice.New(logging).Then(r)
+
+	svr := &http.Server{Addr: cfg.Address, Handler: chain}
 
 	hd := &httpdown.HTTP{
 		StopTimeout: 15 * time.Minute,
