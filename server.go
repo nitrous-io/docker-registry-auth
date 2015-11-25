@@ -44,7 +44,7 @@ type TokenConfig struct {
 
 type AuthRequest struct {
 	User              string
-	Password          string
+	Password          PasswordString
 	authorizationInfo AuthorizationInfo
 }
 
@@ -87,9 +87,9 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Bad request: %v", err), http.StatusBadRequest)
 		return
 	}
-	logrus.Warnf("got auth request: %#v", ar)
+	logrus.Warnf("Auth request received: %+v", ar)
 
-	authenticated, err := s.authenticator.Authenticate(ar.authorizationInfo.Account, ar.Password)
+	authenticated, err := s.authenticator.Authenticate(ar.authorizationInfo.Account, PasswordString(ar.Password))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Authentication failed: %v", err), http.StatusInternalServerError)
 		return
@@ -133,7 +133,7 @@ func (s *Server) parseRequest(r *http.Request) (*AuthRequest, error) {
 	user, password, ok := r.BasicAuth()
 	if ok {
 		ar.User = user
-		ar.Password = password
+		ar.Password = PasswordString(password)
 	}
 
 	account := r.FormValue("account")

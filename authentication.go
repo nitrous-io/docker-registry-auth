@@ -1,12 +1,22 @@
 package main
 
 type Authenticator interface {
-	Authenticate(user, password string) (bool, error)
+	Authenticate(user string, password PasswordString) (bool, error)
+}
+
+type PasswordString string
+
+func (s PasswordString) String() string {
+	if len(s) == 0 {
+		return ""
+	}
+	return "*** (REDACTED)"
 }
 
 type NitrousUserAuthenticator struct {
 }
 
-func (a *NitrousUserAuthenticator) Authenticate(user, password string) (bool, error) {
+func (a *NitrousUserAuthenticator) Authenticate(user string, password PasswordString) (bool, error) {
+
 	return true, nil
 }
