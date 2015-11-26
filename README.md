@@ -11,6 +11,11 @@ Docker clients acting on behalf of nitrous users.
 3. Run the auth service: `make run` (you'll need to install
 [forego](https://github.com/ddollar/forego) first: `go get -u github.com/ddollar/forego`)
 
+### Running tests
+
+Run tests with `make run`. A `docker_registry_auth_test` database will be
+created, which can be used in your tests for functional testing.
+
 ### Go dependency management
 
 This project uses the Go 1.5 vendor experiment so you should
