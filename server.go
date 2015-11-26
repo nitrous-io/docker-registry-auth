@@ -70,7 +70,7 @@ func NewServer(config *Config) *Server {
 	// TODO Allow these 2 to be configured so that we can replace them in tests.
 	if config.db != nil {
 		svr.authenticator = &NitrousUserAuthenticator{DB: config.db}
-		svr.authorizer = &NitrousAuthorizer{DB: config.db}
+		svr.authorizer = &NitrousUserAuthorizer{DB: config.db}
 	}
 
 	return svr
@@ -91,7 +91,7 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, fmt.Sprintf("Bad request: %v", err), http.StatusBadRequest)
 		return
 	}
-	logrus.Warnf("Auth request received: %+v", ar)
+	logrus.Debugf("Auth request received: %+v", ar)
 
 	authenticated, err := s.authenticator.Authenticate(ar.authorizationInfo.Account, PasswordString(ar.Password))
 	if err != nil {
@@ -111,6 +111,7 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, fmt.Sprintf("Authorization failed: %v", err), http.StatusInternalServerError)
 			return
 		}
+		logrus.Debugf("Authorized actions: %v", authorizedActions)
 	}
 
 	token, err := s.createToken(ar, authorizedActions)
@@ -150,7 +151,6 @@ func (s *Server) parseRequest(r *http.Request) (*AuthRequest, error) {
 
 	scope := r.FormValue("scope")
 	if scope != "" {
-		logrus.Warnf("scope present: %q", scope)
 		parts := strings.Split(scope, ":")
 		if len(parts) != 3 {
 			return nil, fmt.Errorf("invalid scope: %q", scope)
