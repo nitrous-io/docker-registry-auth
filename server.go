@@ -15,6 +15,8 @@ import (
 	"github.com/docker/distribution/registry/auth/token"
 	"github.com/docker/libtrust"
 	"github.com/gorilla/mux"
+	"github.com/nitrous-io/docker-registry-auth/authentication"
+	"github.com/nitrous-io/docker-registry-auth/authorization"
 )
 
 // Server is an auth server that conforms to the Docker Registry spec:
@@ -23,8 +25,8 @@ import (
 type Server struct {
 	config        *Config
 	router        *mux.Router
-	authenticator Authenticator
-	authorizer    Authorizer
+	authenticator authentication.Authenticator
+	authorizer    authorization.Authorizer
 }
 
 type Config struct {
@@ -46,8 +48,8 @@ type TokenConfig struct {
 
 type AuthRequest struct {
 	User              string
-	Password          PasswordString
-	authorizationInfo AuthorizationInfo
+	Password          authentication.PasswordString
+	authorizationInfo authorization.AuthorizationInfo
 }
 
 const (
@@ -69,8 +71,8 @@ func NewServer(config *Config) *Server {
 
 	// TODO Allow these 2 to be configured so that we can replace them in tests.
 	if config.db != nil {
-		svr.authenticator = &NitrousUserAuthenticator{DB: config.db}
-		svr.authorizer = &NitrousUserAuthorizer{DB: config.db}
+		svr.authenticator = &authentication.NitrousUserAuthenticator{DB: config.db}
+		svr.authorizer = &authorization.NitrousUserAuthorizer{DB: config.db}
 	}
 
 	return svr
@@ -93,7 +95,7 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	logrus.Debugf("Auth request received: %+v", ar)
 
-	authenticated, err := s.authenticator.Authenticate(ar.authorizationInfo.Account, PasswordString(ar.Password))
+	authenticated, err := s.authenticator.Authenticate(ar.authorizationInfo.Account, authentication.PasswordString(ar.Password))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("Authentication failed: %v", err), http.StatusInternalServerError)
 		return
@@ -138,7 +140,7 @@ func (s *Server) parseRequest(r *http.Request) (*AuthRequest, error) {
 	user, password, ok := r.BasicAuth()
 	if ok {
 		ar.User = user
-		ar.Password = PasswordString(password)
+		ar.Password = authentication.PasswordString(password)
 	}
 
 	account := r.FormValue("account")

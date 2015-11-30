@@ -1,12 +1,14 @@
-package main
+package authorization
 
 import (
 	"reflect"
 	"testing"
+
+	"github.com/nitrous-io/docker-registry-auth/test"
 )
 
 func TestAuthorize(t *testing.T) {
-	db, err := testDatabase()
+	db, err := test.TestDatabase()
 	if err != nil {
 		t.Fatalf("failed to initialize test database, err: %v", err)
 	}

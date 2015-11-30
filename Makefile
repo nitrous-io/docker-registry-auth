@@ -9,7 +9,7 @@ run: build
 .PHONY: run
 
 test: create-test-db
-	go test .
+	go test $(shell glide novendor)
 
 create-test-db:
 	createdb -E UTF8 -T template0 -l en_US.utf8 docker_registry_auth_test || true

@@ -1,4 +1,4 @@
-package main
+package test
 
 import (
 	"database/sql"
@@ -6,6 +6,7 @@ import (
 	"os/user"
 
 	"github.com/DATA-DOG/go-txdb"
+	_ "github.com/lib/pq"
 )
 
 func init() {
@@ -19,7 +20,7 @@ func init() {
 	txdb.Register("txdb", "postgres", dns)
 }
 
-func testDatabase() (*sql.DB, error) {
+func TestDatabase() (*sql.DB, error) {
 	db, err := sql.Open("txdb", "identifier")
 	if err != nil {
 		return nil, err

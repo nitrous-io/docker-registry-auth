@@ -1,13 +1,13 @@
-package main
+package authentication
 
 import (
 	"testing"
 
-	_ "github.com/lib/pq"
+	"github.com/nitrous-io/docker-registry-auth/test"
 )
 
 func TestAuthenticate(t *testing.T) {
-	db, err := testDatabase()
+	db, err := test.TestDatabase()
 	if err != nil {
 		t.Fatalf("failed to initialize test database, err: %v", err)
 	}
