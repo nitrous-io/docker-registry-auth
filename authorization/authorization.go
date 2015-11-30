@@ -19,7 +19,7 @@ type AuthorizationInfo struct {
 	Actions []string
 }
 
-type NitrousUserAuthorizer struct {
+type NitrousAuthorizer struct {
 	DB *sql.DB
 }
 
@@ -42,7 +42,7 @@ var (
 	ErrAuthInvalidRepo = errors.New("invalid repository format")
 )
 
-func (na *NitrousUserAuthorizer) Authorize(ai *AuthorizationInfo) ([]string, error) {
+func (na *NitrousAuthorizer) Authorize(ai *AuthorizationInfo) ([]string, error) {
 	if ai.Type != "repository" {
 		return nil, ErrAuthInvalidType
 	}

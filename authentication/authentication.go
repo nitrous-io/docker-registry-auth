@@ -15,13 +15,13 @@ func (s PasswordString) String() string {
 	return "*** (REDACTED)"
 }
 
-type NitrousUserAuthenticator struct {
+type NitrousAuthenticator struct {
 	DB *sql.DB
 }
 
 const dockerRegistryTokenType = "docker_registry" // Tokens in the database should be of this type.
 
-func (na *NitrousUserAuthenticator) Authenticate(user string, password PasswordString) (bool, error) {
+func (na *NitrousAuthenticator) Authenticate(user string, password PasswordString) (bool, error) {
 	var userID int64
 	err := na.DB.QueryRow(`SELECT user_id FROM tokens WHERE
 			type = $1

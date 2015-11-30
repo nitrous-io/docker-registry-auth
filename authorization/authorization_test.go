@@ -41,7 +41,7 @@ func TestAuthorize(t *testing.T) {
 		t.Fatalf("error inserting test data, err: %v", err)
 	}
 
-	na := &NitrousUserAuthorizer{DB: db}
+	na := &NitrousAuthorizer{DB: db}
 
 	testCases := []struct {
 		ai          *AuthorizationInfo

@@ -71,8 +71,8 @@ func NewServer(config *Config) *Server {
 
 	// TODO Allow these 2 to be configured so that we can replace them in tests.
 	if config.db != nil {
-		svr.authenticator = &authentication.NitrousUserAuthenticator{DB: config.db}
-		svr.authorizer = &authorization.NitrousUserAuthorizer{DB: config.db}
+		svr.authenticator = &authentication.NitrousAuthenticator{DB: config.db}
+		svr.authorizer = &authorization.NitrousAuthorizer{DB: config.db}
 	}
 
 	return svr

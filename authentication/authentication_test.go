@@ -28,7 +28,7 @@ func TestAuthenticate(t *testing.T) {
 		t.Fatalf("error inserting test data, err: %v", err)
 	}
 
-	na := &NitrousUserAuthenticator{DB: db}
+	na := &NitrousAuthenticator{DB: db}
 
 	testCases := []struct {
 		username string
