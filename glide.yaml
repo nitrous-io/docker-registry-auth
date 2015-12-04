@@ -26,3 +26,9 @@ import:
   version: ae7391529ced9c12f06bf01eae33dadb4c70e49f
 - package: github.com/DATA-DOG/go-txdb
   version: b8218770ead3a0d7a9fc626faf3fc6f32dc7ce89
+- package: golang.org/x/net
+  version: 1cd7b7179478daf1f19f8b4b4f08106ef411619b
+  subpackages:
+  - /context
+- package: golang.org/x/crypto
+  version: 1fbbd62cfec66bd39d91e97749579579d4d3037e
