@@ -1,6 +1,6 @@
 version: 0.1
 log:
-  level: debug
+  level: info
   fields:
     service: registry
     environment: development
@@ -11,7 +11,7 @@ storage:
     rootdirectory: /var/lib/registry
 auth:
   token:
-    realm: http://reggie.n2odev.com:5002/auth
+    realm: http://host:5002/auth
     service: Docker registry
     issuer: Nitrous Registry Auth Service
     rootcertbundle: /etc/docker/registry/n2odev.crt
