@@ -90,18 +90,24 @@ func (s *Server) indexHandler(w http.ResponseWriter, r *http.Request) {
 func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 	ar, err := s.parseRequest(r)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Bad request: %v", err), http.StatusBadRequest)
+		msg := fmt.Sprintf("Bad auth request: %v", err)
+		logrus.Info(msg)
+		http.Error(w, msg, http.StatusBadRequest)
 		return
 	}
 	logrus.Debugf("Auth request received: %+v", ar)
 
 	authenticated, err := s.authenticator.Authenticate(ar.authorizationInfo.Account, authentication.PasswordString(ar.Password))
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Authentication failed: %v", err), http.StatusInternalServerError)
+		msg := fmt.Sprintf("Authentication failed: %v", err)
+		logrus.Info(msg)
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 	if !authenticated {
-		http.Error(w, fmt.Sprintf("Authentication failed"), http.StatusUnauthorized)
+		msg := "Authentication failed"
+		logrus.Info(msg)
+		http.Error(w, msg, http.StatusUnauthorized)
 		return
 	}
 
@@ -110,7 +116,9 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 	if ar.authorizationRequired() {
 		authorizedActions, err = s.authorizer.Authorize(&ar.authorizationInfo)
 		if err != nil {
-			http.Error(w, fmt.Sprintf("Authorization failed: %v", err), http.StatusInternalServerError)
+			msg := fmt.Sprintf("Authorization failed: %v", err)
+			logrus.Info(msg)
+			http.Error(w, msg, http.StatusInternalServerError)
 			return
 		}
 		logrus.Debugf("Authorized actions: %v", authorizedActions)
@@ -118,13 +126,17 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 
 	token, err := s.createToken(ar, authorizedActions)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to generate token: %v", err), http.StatusInternalServerError)
+		msg := fmt.Sprintf("Failed to generate token: %v", err)
+		logrus.Info(msg)
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 
 	body, err := json.Marshal(map[string]string{"token": token})
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Failed to encode token to JSON: %v", err), http.StatusInternalServerError)
+		msg := fmt.Sprintf("Failed to encode token to JSON: %v", err)
+		logrus.Info(msg)
+		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
 
