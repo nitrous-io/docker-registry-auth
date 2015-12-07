@@ -13,6 +13,12 @@ Docker clients acting on behalf of Nitrous users:
    E.g. when trying to `docker pull registry.tld:5000/nitrous-io/busybox`, the
    org (slug) is `nitrous-io`.
 
+### Layout
+
+This is a [gb](http://getgb.io/) project.  So source code goes in `src/` and
+vendor code goes in `vendor/src/`.  Binaries built with `make build` are found
+in `bin/`.
+
 ### Development
 
 1. Run a Docker registry container: `docker run -d -p 5000:5000 --name registry.n2odev.com -v `pwd`/registry:/etc/docker/registry registry:2`
@@ -35,14 +41,22 @@ respectively.
 
 ### Running tests
 
-Run tests with `make run`. A `docker_registry_auth_test` Postgres database will
+Run tests with `make test`. A `docker_registry_auth_test` Postgres database will
 be created, which can be used in your tests for functional testing.
 
 ### Go dependency management
 
-This project uses the Go 1.5 vendor experiment so you should
-`export GO15VENDOREXPERIMENT=1` in your shell.
+This project uses [gb](http://getgb.io/) for very lightweight dependency management.
 
-I'm using [Glide](https://github.com/Masterminds/glide) for dependency
-management because I just cannot get [godep](https://github.com/tools/godep) to
-work with `GO15VENDOREXPERIMENT=1` (it refuses to copy packages to `vendor/`).
+To add a dependency, do:
+
+```shell
+git clone https://github.com/kr/fs vendor/src/github.com/kr/fs
+# check that `gb build all` and `gb test all` work
+# NOTE: ensure you have a trailing slash -- this means add the files sans the .git directory
+# leaving out the trailing slash will add it as a subproject, which *YOU DO NOT WANT*
+git add vendor/src/github.com/kr/fs/
+```
+
+To modify a dependency, remove the directory, git clone into it again, and run
+whatever git commands you need to get the dependency dir to where you need it to be.
