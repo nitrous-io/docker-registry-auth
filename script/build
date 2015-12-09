@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+scriptdir=$(dirname "$BASH_SOURCE[0]")
+source $scriptdir/common
+
+echo -e "$OK_COLOR==> Building Go source ${VERSION} to ${build_dir}...$NO_COLOR"
+docker run $docker_run_opts \
+  --volume $build_dir:/opt/src/github.com/nitrous-io/docker-registry-auth/bin \
+  $image_name \
+  ./script/ic-build

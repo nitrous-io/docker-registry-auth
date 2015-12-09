@@ -5,6 +5,10 @@
 # scriptdir=$(dirname "$BASH_SOURCE[0]")
 # source $scriptdir/common
 
+scriptdir=$(dirname "$BASH_SOURCE[0]")
+export repo_root=$(readlink -f $scriptdir/..)
+
+export build_dir="$repo_root/bin"
 export image_name="nitrous-io/docker-registry-auth:latest"
 export docker_run_opts="--privileged=true --rm"
 

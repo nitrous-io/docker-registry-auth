@@ -1,6 +1,11 @@
-build: bootstrap
-	gb build all
+build: image
+	@./script/build
 .PHONY: build
+
+# fast build -- build outside of docker
+fbuild: bootstrap
+	@gb build all
+.PHONY: fbuild
 
 run: build
 	forego run -e .env bin/docker-registry-auth
