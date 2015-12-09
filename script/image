@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -e
+
+scriptdir=$(dirname "$BASH_SOURCE[0]")
+source $scriptdir/common
+
+echo -e "$OK_COLOR==> Building docker image ${image_name}...$NO_COLOR"
+docker build -t $image_name .

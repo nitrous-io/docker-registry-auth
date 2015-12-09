@@ -1,13 +1,28 @@
-build: bootstrap
-	gb build all
+build: image
+	@./script/build
 .PHONY: build
+
+# fast build -- build outside of docker
+fbuild: bootstrap
+	@gb build all
+.PHONY: fbuild
 
 run: build
 	forego run -e .env bin/docker-registry-auth
 .PHONY: run
 
-test: bootstrap create-test-db
-	gb test all
+# fast run -- run after building outside docker
+frun: fbuild
+	forego run -e .env bin/docker-registry-auth
+.PHONY: frun
+
+test: image
+	@./script/test
+.PHONY: test
+
+image:
+	@./script/image
+.PHONY: image
 
 create-test-db:
 	createdb -E UTF8 -T template0 -l en_US.utf8 docker_registry_auth_test || true
