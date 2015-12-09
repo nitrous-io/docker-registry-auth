@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+die() {
+  echo $* && exit 1
+}
+
+# run spawn a function runs inside a subshell and record its error status
+run() {
+  cmd=$1
+  shift
+  ($cmd $@)
+  if [[ "$?" == "1" ]]; then
+    die 'One or more tests have failed'
+  fi
+}
+
+test_app() {
+  sudo service postgresql restart
+  createdb -E UTF8 -T template0 -l en_US.utf8 docker_registry_auth_test || true
+  export TESTING=1
+  gb test -v all
+}
+
+run test_app
