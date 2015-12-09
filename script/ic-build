@@ -5,4 +5,6 @@ set -e
 scriptdir=$(dirname "$BASH_SOURCE[0]")
 source $scriptdir/common
 
-gb build all
+BUILD_VERSION=${BUILD_VERSION:=unknown}
+
+gb build -f -ldflags "-X main.version=$BUILD_VERSION" all

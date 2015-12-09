@@ -19,6 +19,8 @@ import (
 	_ "github.com/lib/pq"
 )
 
+var version string // value will be injected at build time
+
 const envPrefix = "REGAUTH" // Env vars should be prefixed with "REGAUTH_".
 
 func main() {
@@ -75,7 +77,11 @@ func main() {
 		StopTimeout: 15 * time.Minute,
 		KillTimeout: 1 * time.Minute,
 	}
-	logrus.Infof("Starting server at %s (pid: %d)", httpSvr.Addr, os.Getpid())
+	logrus.WithFields(logrus.Fields{
+		"version": version,
+		"address": httpSvr.Addr,
+		"pid":     os.Getpid(),
+	}).Infof("Starting server")
 	hsvr, err := hd.ListenAndServe(httpSvr)
 	if err != nil {
 		logrus.Fatalf("Error starting server, err: %v", err)

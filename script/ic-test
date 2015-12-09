@@ -13,8 +13,8 @@ run() {
 }
 
 test_app() {
-  # sudo service postgresql restart
-  # createdb -E UTF8 -T template0 -l en_US.utf8 docker_registry_auth_test || true
+  sudo service postgresql restart
+  createdb -E UTF8 -T template0 -l en_US.utf8 docker_registry_auth_test || true
   export TESTING=1
   gb test -v all
 }

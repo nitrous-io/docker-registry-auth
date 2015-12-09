@@ -9,6 +9,8 @@ scriptdir=$(dirname "$BASH_SOURCE[0]")
 export repo_root=$(readlink -f $scriptdir/..)
 
 export build_dir="$repo_root/bin"
+export git_dir="$repo_root/.git"
+export git_version=$(git diff-index --quiet HEAD && git rev-parse --short HEAD || echo "local")
 export image_name="nitrous-io/docker-registry-auth:latest"
 export docker_run_opts="--privileged=true --rm"
 
@@ -16,7 +18,6 @@ export NO_COLOR="\033[0m"
 export OK_COLOR="\033[32;01m"
 export ERROR_COLOR="\033[31;01m"
 export WARN_COLOR="\033[33;01m"
-export VERSION=$(git diff-index --quiet HEAD && git rev-parse --short HEAD || echo "(local changes)")
 
 die() {
   echo -e $* && exit 1

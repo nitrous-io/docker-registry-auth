@@ -11,6 +11,11 @@ run: build
 	forego run -e .env bin/docker-registry-auth
 .PHONY: run
 
+# fast run -- run after building outside docker
+frun: fbuild
+	forego run -e .env bin/docker-registry-auth
+.PHONY: frun
+
 test: image
 	@./script/test
 .PHONY: test
