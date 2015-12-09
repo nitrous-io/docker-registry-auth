@@ -6,8 +6,13 @@ run: build
 	forego run -e .env bin/docker-registry-auth
 .PHONY: run
 
-test: bootstrap create-test-db
-	gb test all
+test: image
+	@./script/test
+.PHONY: test
+
+image:
+	@./script/image
+.PHONY: image
 
 create-test-db:
 	createdb -E UTF8 -T template0 -l en_US.utf8 docker_registry_auth_test || true
