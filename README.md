@@ -60,3 +60,4 @@ git add vendor/src/github.com/kr/fs/
 
 To modify a dependency, remove the directory, git clone into it again, and run
 whatever git commands you need to get the dependency dir to where you need it to be.
+
