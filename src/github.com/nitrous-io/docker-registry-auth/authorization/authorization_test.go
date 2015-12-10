@@ -99,14 +99,14 @@ func TestAuthorize(t *testing.T) {
 			expected: []string{},
 		},
 		{
-			// Member users should have only pull access.
+			// Member users should have push and pull access.
 			ai: &AuthorizationInfo{
 				Account: "member-user",
 				Type:    "repository",
 				Name:    "org1/busybox",
 				Actions: []string{"pull", "push"},
 			},
-			expected: []string{"pull"},
+			expected: []string{"pull", "push"},
 		},
 		{
 			// Admin users should have pull, push and delete access.

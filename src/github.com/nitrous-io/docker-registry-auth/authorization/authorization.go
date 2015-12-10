@@ -34,7 +34,7 @@ var (
 	roleToActions = map[string][]string{
 		roleOwner:   []string{"pull", "push", "delete"},
 		roleAdmin:   []string{"pull", "push", "delete"},
-		roleMember:  []string{"pull"},
+		roleMember:  []string{"pull", "push"},
 		roleLimited: []string{},
 	}
 
