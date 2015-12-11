@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Requirements of the script
+# - UPLOAD_S3=true
+# - PRIVATE_BUCKET=nitrous-docker-registry-auth
+# - ACCESS_KEY
+# - SECRET_KEY
+
+scriptdir=$(dirname "$BASH_SOURCE[0]")
+source $scriptdir/common
+build_version="$(cat $repo_root/VERSION)-${git_version:=unknown}"
+
+# check if we should upload the artifacts to private s3
+UPLOAD_S3=${UPLOAD_S3:="false"}
+PRIVATE_BUCKET=${PRIVATE_BUCKET:?"PRIVATE_BUCKET is required"}
+
+upload_private_s3() {
+  if [[ "$UPLOAD_S3" == "true" ]]; then
+    s3cmd --access_key=$ACCESS_KEY --secret_key=$SECRET_KEY \
+      put $1 s3://$PRIVATE_BUCKET/$2
+  fi
+}
+
+# Compressing the file
+(
+  echo "Creating build/nitrous-docker-registry-auth.tar.gz"
+  tar czvf nitrous-docker-registry-auth.tar.gz -C bin .
+  md5sum nitrous-docker-registry-auth.tar.gz > nitrous-docker-registry-auth.md5
+)
+
+if [ "$UPLOAD_S3" == "true" ]; then
+
+  echo "Doing release to S3"
+  upload_private_s3 nitrous-docker-registry-auth.tar.gz nitrous-docker-registry-auth-$build_version.tar.gz
+  upload_private_s3 nitrous-docker-registry-auth.tar.gz nitrous-docker-registry-auth-latest.tar.gz
+  upload_private_s3 nitrous-docker-registry-auth.md5 nitrous-docker-registry-auth-$build_version.md5
+  upload_private_s3 nitrous-docker-registry-auth.md5 nitrous-docker-registry-auth-latest.md5
+fi
+

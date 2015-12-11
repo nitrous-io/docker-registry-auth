@@ -7,6 +7,10 @@ fbuild: bootstrap
 	@gb build all
 .PHONY: fbuild
 
+release: build
+	@./script/release
+.PHONY: release
+
 run: build
 	forego run -e .env bin/docker-registry-auth
 .PHONY: run
