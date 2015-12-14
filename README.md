@@ -21,9 +21,10 @@ in `bin/`.
 
 ### Development
 
-1. Run a Docker registry container: `docker run -d -p 5000:5000 --name registry.n2odev.com -v `pwd`/registry:/etc/docker/registry registry:2`
-2. Create config file for auth service: `cp .env-example .env; open .env`
-3. Run the auth service: `make run` (you'll need to install
+1. Make a copy of the Docker registry config and edit it: `cp registry/config.yml-example registry/config.yml; vi registry/config.yml`
+* Run a Docker registry container: `docker run -d -p 5000:5000 --name registry.n2odev.com -v `pwd`/registry:/etc/docker/registry registry:2`
+* Create config file for auth service: `cp .env-example .env; open .env`
+* Run the auth service: `make run` (you'll need to install
 [forego](https://github.com/ddollar/forego) first: `go get -u github.com/ddollar/forego`)
 
 #### Connecting from Docker hosts

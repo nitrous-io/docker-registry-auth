@@ -25,9 +25,18 @@ http:
     X-Content-Type-Options: [nosniff]
   debug:
     addr: :5001
+notifications:
+  endpoints:
+    - name: nitrousd
+      url: http://172.18.0.1:3333/api/v0/docker/registry/notifications
+      headers:
+        Authorization: [Bearer dev-shared-secret]
+      timeout: 2s
+      threshold: 3
+      backoff: 2s
+      disabled: false
 health:
   storagedriver:
     enabled: true
     interval: 10s
     threshold: 3
-
