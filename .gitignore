@@ -1,4 +1,5 @@
 .env
+registry/config.yml
 build/
 bin/
 pkg/
