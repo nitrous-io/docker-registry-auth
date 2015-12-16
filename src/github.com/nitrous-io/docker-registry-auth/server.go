@@ -57,6 +57,13 @@ const (
 	tokenExpiry = 15 * time.Minute
 )
 
+func (c *Config) String() string {
+	type c2 Config
+	cs := c2(*c)
+	cs.DatabaseURL = "(REDACTED)"
+	return fmt.Sprintf("%+v", cs)
+}
+
 func (r *AuthRequest) authorizationRequired() bool {
 	return len(r.authorizationInfo.Actions) > 0
 }
