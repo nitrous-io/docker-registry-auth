@@ -28,7 +28,7 @@ func main() {
 	if err := envconfig.Process(envPrefix, &cfg); err != nil {
 		logrus.Fatalf("Error reading config, err: %v", err)
 	}
-	logrus.Infof("Using config: %#v", cfg)
+	logrus.Infof("Using config: %s", &cfg)
 	if lvl, err := logrus.ParseLevel(cfg.LogLevel); err == nil {
 		logrus.SetLevel(lvl)
 	}
