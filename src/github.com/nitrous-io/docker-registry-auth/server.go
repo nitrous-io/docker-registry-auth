@@ -98,7 +98,7 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 	ar, err := s.parseRequest(r)
 	if err != nil {
 		msg := fmt.Sprintf("Bad auth request: %v", err)
-		logrus.Info(msg)
+		logrus.Warnf(msg)
 		http.Error(w, msg, http.StatusBadRequest)
 		return
 	}
@@ -106,15 +106,13 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 
 	authenticated, err := s.authenticator.Authenticate(ar.authorizationInfo.Account, authentication.PasswordString(ar.Password))
 	if err != nil {
-		msg := fmt.Sprintf("Authentication failed: %v", err)
-		logrus.Info(msg)
-		http.Error(w, msg, http.StatusInternalServerError)
+		logrus.Warnf(fmt.Sprint("Failed authentication attempt (with error), request: %+v, err: %v", r, err))
+		http.Error(w, fmt.Sprintf("Authentication failed: %v", err), http.StatusInternalServerError)
 		return
 	}
 	if !authenticated {
-		msg := "Authentication failed"
-		logrus.Info(msg)
-		http.Error(w, msg, http.StatusUnauthorized)
+		logrus.Warnf(fmt.Sprint("Failed authentication attempt, request: %+v", r))
+		http.Error(w, "Authentication failed", http.StatusUnauthorized)
 		return
 	}
 
@@ -123,9 +121,8 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 	if ar.authorizationRequired() {
 		authorizedActions, err = s.authorizer.Authorize(&ar.authorizationInfo)
 		if err != nil {
-			msg := fmt.Sprintf("Authorization failed: %v", err)
-			logrus.Info(msg)
-			http.Error(w, msg, http.StatusInternalServerError)
+			logrus.Warnf("Failed authorization attempt, request: %+v, err: %v", r, err)
+			http.Error(w, fmt.Sprintf("Authorization failed: %v", err), http.StatusInternalServerError)
 			return
 		}
 		logrus.Debugf("Authorized actions: %v", authorizedActions)
@@ -134,7 +131,7 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 	token, err := s.createToken(ar, authorizedActions)
 	if err != nil {
 		msg := fmt.Sprintf("Failed to generate token: %v", err)
-		logrus.Info(msg)
+		logrus.Warnf(msg)
 		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
@@ -142,7 +139,7 @@ func (s *Server) authHandler(w http.ResponseWriter, r *http.Request) {
 	body, err := json.Marshal(map[string]string{"token": token})
 	if err != nil {
 		msg := fmt.Sprintf("Failed to encode token to JSON: %v", err)
-		logrus.Info(msg)
+		logrus.Warnf(msg)
 		http.Error(w, msg, http.StatusInternalServerError)
 		return
 	}
